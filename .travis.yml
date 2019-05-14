@@ -1,0 +1,17 @@
+# vim: ts=2 sw=2 et :
+---
+language: python
+
+sudo: required
+
+services:
+  - docker
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

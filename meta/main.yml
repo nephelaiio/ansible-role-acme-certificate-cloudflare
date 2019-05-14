@@ -1,0 +1,30 @@
+---
+galaxy_info:
+  author: Ted Cook
+  description: An ansible role to generate acme certificates using dns challenges with route53
+  license: MIT
+  min_ansible_version: 2.2
+  platforms:
+    - name: EL
+      versions:
+        - 7
+    - name: Archlinux
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - xenial
+    - name: Debian
+      versions:
+        - stretch
+  galaxy_tags:
+    - acme-dnschallenge-route53
+
+dependencies:
+  - role: nephelaiio.pip
+    version: 3.0.0
+  - role: nephelaiio.plugins
+    version: 1.0.12
+  - role: geerlingguy.repo-epel
+    version: 1.2.3
+    when: ansible_os_family == 'RedHat'
