@@ -1,7 +1,7 @@
 ---
 # acme_certificate_cf_account_email: set to cloudflare token email
 # acme_certificate_cf_account_token: set to cloudflare token email
-acme_certificate_group: letsencrypt
+acme_certificate_group: acme
 acme_certificate_group_members: []
 acme_certificate_add_ca: "{{ certificate_add_ca | default(False) }}"
 acme_certificate_basedir: /etc/letsencrypt
@@ -9,6 +9,8 @@ acme_certificate_certdir: "{{ acme_certificate_basedir }}/live"
 acme_certificate_keydir: "{{ acme_certificate_basedir }}/keys"
 acme_certificate_account_keyfile: "{{ acme_certificate_keydir }}/id_rsa.letsencrypt"
 acme_certificate_domain: "{{ ansible_fqdn }}"
+acme_certificate_cf_account_email: "{{ lookup('env', 'CF_ACCOUNT_EMAIL') }}"
+acme_certificate_cf_account_token: "{{ lookup('env', 'CF_ACCOUNT_TOKEN') }}"
 acme_certificate_zone: "{{ acme_certificate_domain | split_with('.') | tail | join('.') }}"
 acme_certificate_caurl: https://letsencrypt.org/certs/isrgrootx1.pem.txt
 acme_certificate_intcaurl: https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt
