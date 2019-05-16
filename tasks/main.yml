@@ -114,13 +114,13 @@
   get_url:
     url: "{{ acme_certificate_caurl }}"
     dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
-    group: "{{ acme_certificate_group }}"
+    mode: 0644
 
 - name: retrieve letsencrypt intermediate ca file
   get_url:
     url: "{{ acme_certificate_intcaurl }}"
     dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_intcafile }}"
-    group: "{{ acme_certificate_group }}"
+    mode: 0644
 
 - block:
 
