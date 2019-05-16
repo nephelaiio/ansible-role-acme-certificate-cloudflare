@@ -1,4 +1,6 @@
 ---
+# acme_certificate_cf_account_email: set to cloudflare token email
+# acme_certificate_cf_account_token: set to cloudflare token email
 acme_certificate_group: letsencrypt
 acme_certificate_group_members: []
 acme_certificate_add_ca: "{{ certificate_add_ca | default(False) }}"

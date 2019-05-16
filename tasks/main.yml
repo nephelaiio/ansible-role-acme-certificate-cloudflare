@@ -62,59 +62,44 @@
     name: geerlingguy.repo-epel
   when: ansible_os_family == 'RedHat'
 
-- name: install pip
-  include_role:
-    name: nephelaiio.pip
-
-- name: install route53 dependencies
-  pip:
-    name: boto
-
-- name: create route53 txt record for certificate validation
-  route53:
-    command: create
-    aws_access_key: "{{ acme_certificate_aws_accesskey_id }}"
-    aws_secret_key: "{{ acme_certificate_aws_accesskey_secret }}"
-    zone: "{{ acme_certificate_zone }}"
-    record: "{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
-    retry_interval: 300
+- name: create cloudflare dns challenge record
+  cloudflare_dns:
+    zone: "{{ letsencrypt_zone }}"
     type: TXT
-    ttl: 7200
-    value: '"{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
-    wait: yes
-    overwrite: yes
-  when: "'challenge_data' in acme_certificate_challenge"
+    state: present
+    record: "{{ letsencrypt_challenge.challenge_data[letsencrypt_domain]['dns-01']['resource'] }}.{{ letsencrypt_domain }}"
+    value: '"{{ letsencrypt_challenge.challenge_data[letsencrypt_domain]["dns-01"]["resource_value"] }}"'
+    account_email: "{{ acme_certificate_cf_account_email }}"
+    account_api_token: "{{ acme_certificate_cf_account_token }}"
+  when: "'challenge_data' in letsencrypt_challenge"
 
 - name: wait for txt record propagation
   pause:
     seconds: 60
-  when: "'challenge_data' in acme_certificate_challenge"
+  when: "'challenge_data' in letsencrypt_challenge"
 
 - name: validate challenge
   acme_certificate:
-    account_key: "{{ acme_certificate_account_keyfile }}"
+    account_key: "{{ letsencrypt_account_keyfile }}"
     challenge: dns-01
-    csr: "{{ _acme_certificate_domain_csrfile }}"
-    dest: "{{ _acme_certificate_domain_crtfile }}"
-    fullchain_dest: "{{ _acme_certificate_domain_chainfile }}"
-    data: "{{ acme_certificate_challenge }}"
+    csr: "{{ letsencrypt_domain_csrfile }}"
+    dest: "{{ letsencrypt_domain_crtfile }}"
+    fullchain_dest: "{{ letsencrypt_domain_chainfile }}"
+    data: "{{ letsencrypt_challenge }}"
     terms_agreed: yes
-    acme_directory: "{{ acme_certificate_directory }}"
-  when: "'challenge_data' in acme_certificate_challenge"
+    acme_directory: https://acme-v01.api.letsencrypt.org/directory
+  when: "'challenge_data' in letsencrypt_challenge"
 
-- name: delete route53 txt record for certificate validation
-  route53:
-    command: delete
-    aws_access_key: "{{ acme_certificate_aws_accesskey_id }}"
-    aws_secret_key: "{{ acme_certificate_aws_accesskey_secret }}"
-    zone: "{{ acme_certificate_zone }}"
-    record: "{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_zone }}"
-    retry_interval: 300
+- name: delete cloudflare dns challenge record
+  cloudflare_dns:
+    zone: "{{ letsencrypt_zone }}"
     type: TXT
-    ttl: 7200
-    value: '"{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
-    wait: yes
-  when: "'challenge_data' in acme_certificate_challenge"
+    state: absent
+    record: "{{ letsencrypt_challenge.challenge_data[letsencrypt_domain]['dns-01']['resource'] }}.{{ letsencrypt_domain }}"
+    value: '"{{ letsencrypt_challenge.challenge_data[letsencrypt_domain]["dns-01"]["resource_value"] }}"'
+    account_email: "{{ cloudflare_api_email }}"
+    account_api_token: "{{ cloudflare_api_token }}"
+  when: "'challenge_data' in letsencrypt_challenge"
   ignore_errors: yes
 
 - name: manage keyfile permissions

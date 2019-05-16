@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Ted Cook
-  description: An ansible role to generate acme certificates using dns challenges with route53
+  description: An ansible role to generate acme certificates using dns challenges with cloudflare dns
   license: MIT
   min_ansible_version: 2.2
   platforms:
@@ -18,11 +18,9 @@ galaxy_info:
       versions:
         - stretch
   galaxy_tags:
-    - acme-dnschallenge-route53
+    - acme-dnschallenge-cloudflare
 
 dependencies:
-  - role: nephelaiio.pip
-    version: 3.0.0
   - role: nephelaiio.plugins
     version: 1.0.12
   - role: geerlingguy.repo-epel
