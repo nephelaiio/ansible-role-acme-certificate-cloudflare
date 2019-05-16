@@ -3,3 +3,5 @@
 acme_certificate_packages:
   - openssl
   - openssh-client
+acme_certificate_storedir: /usr/local/share/ca-certificates/letsencrypt
+acme_os_ca_file: /etc/ssl/certs/ca-certificates.crt

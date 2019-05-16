@@ -39,21 +39,21 @@
     creates: "{{ acme_certificate_account_keyfile }}"
 
 - name: create domain key
-  shell: 'ssh-keygen -t rsa -b 2048 -C "{{ acme_certificate_email }}" -f {{ acme_certificate_domain_keyfile }} -q -N ""'
+  shell: 'ssh-keygen -t rsa -b 2048 -C "{{ acme_certificate_email }}" -f {{ _acme_certificate_domain_keyfile }} -q -N ""'
   args:
-    creates: "{{ acme_certificate_domain_keyfile }}"
+    creates: "{{ _acme_certificate_domain_keyfile }}"
 
 - name: create csr
-  shell: 'openssl req -new -nodes -key {{ acme_certificate_domain_keyfile }} -out {{ acme_certificate_domain_csrfile }} -subj "/CN={{ acme_certificate_domain }}"'
+  shell: 'openssl req -new -nodes -key {{ _acme_certificate_domain_keyfile }} -out {{ _acme_certificate_domain_csrfile }} -subj "/CN={{ acme_certificate_domain }}"'
   changed_when: false
 
 - name: create challenge
   acme_certificate:
     account_key: "{{ acme_certificate_account_keyfile }}"
     challenge: dns-01
-    csr: "{{ acme_certificate_domain_csrfile }}"
-    dest: "{{ acme_certificate_domain_crtfile }}"
-    fullchain_dest: "{{ acme_certificate_domain_chainfile }}"
+    csr: "{{ _acme_certificate_domain_csrfile }}"
+    dest: "{{ _acme_certificate_domain_crtfile }}"
+    fullchain_dest: "{{ _acme_certificate_domain_chainfile }}"
     terms_agreed: yes
   register: acme_certificate_challenge
 
@@ -94,9 +94,9 @@
   acme_certificate:
     account_key: "{{ acme_certificate_account_keyfile }}"
     challenge: dns-01
-    csr: "{{ acme_certificate_domain_csrfile }}"
-    dest: "{{ acme_certificate_domain_crtfile }}"
-    fullchain_dest: "{{ acme_certificate_domain_chainfile }}"
+    csr: "{{ _acme_certificate_domain_csrfile }}"
+    dest: "{{ _acme_certificate_domain_crtfile }}"
+    fullchain_dest: "{{ _acme_certificate_domain_chainfile }}"
     data: "{{ acme_certificate_challenge }}"
     terms_agreed: yes
     acme_directory: "{{ acme_certificate_directory }}"
@@ -119,7 +119,7 @@
 
 - name: manage keyfile permissions
   file:
-    path: "{{ acme_certificate_domain_keyfile }}"
+    path: "{{ _acme_certificate_domain_keyfile }}"
     owner: root
     group: "{{ acme_certificate_group }}"
     mode: 0640
@@ -128,13 +128,13 @@
 - name: retrieve letsencrypt root ca file
   get_url:
     url: "{{ acme_certificate_caurl }}"
-    dest: "{{ acme_certificate_certdir }}/{{ acme_certificate_cafile }}"
+    dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
     group: "{{ acme_certificate_group }}"
 
 - name: retrieve letsencrypt intermediate ca file
   get_url:
     url: "{{ acme_certificate_intcaurl }}"
-    dest: "{{ acme_certificate_certdir }}/{{ acme_certificate_intcafile }}"
+    dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_intcafile }}"
     group: "{{ acme_certificate_group }}"
 
 - block:
@@ -148,8 +148,8 @@
       copy:
         mode: preserve
         remote_src: yes
-        src: "{{ acme_certificate_certdir }}/{{ acme_certificate_cafile }}"
-        dest: "{{ acme_certificate_storedir }}/{{ acme_certificate_cafile }}"
+        src: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
+        dest: "{{ acme_certificate_storedir }}/{{ _acme_certificate_cafile }}"
 
     - name: update ca certificates
       command: update-ca-certificates
@@ -166,34 +166,34 @@
 - name: set certificate file link
   file:
     state: link
-    src: "{{ acme_certificate_domain_crtfile }}"
-    dest: "{{ certificate_file }}"
-  when: certificate_file is defined
+    src: "{{ _acme_certificate_domain_crtfile }}"
+    dest: "{{ acme_certificate_file }}"
+  when: acme_certificate_file is defined
 
 - name: set certificate chain link
   file:
     state: link
-    src: "{{ acme_certificate_domain_chainfile }}"
-    dest: "{{ certificate_chainfile }}"
-  when: certificate_chainfile is defined
+    src: "{{ _acme_certificate_domain_chainfile }}"
+    dest: "{{ acme_certificate_chainfile }}"
+  when: acme_certificate_chainfile is defined
 
 - name: set certificate key link
   file:
     state: link
-    src: "{{ acme_certificate_domain_keyfile }}"
-    dest: "{{ certificate_keyfile }}"
-  when: certificate_keyfile is defined
+    src: "{{ _acme_certificate_domain_keyfile }}"
+    dest: "{{ acme_certificate_keyfile }}"
+  when: acme_certificate_keyfile is defined
 
 - name: set ca file link
   file:
     state: link
-    src: "{{ acme_certificate_certdir }}/{{ acme_certificate_cafile }}"
-    dest: "{{ certificate_cafile }}"
-  when: certificate_cafile is defined
+    src: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
+    dest: "{{ acme_certificate_cafile }}"
+  when: acme_certificate_cafile is defined
 
 - name: set intca file link
   file:
     state: link
-    src: "{{ acme_certificate_certdir }}/{{ acme_certificate_intcafile }}"
-    dest: "{{ certificate_intcafile }}"
-  when: certificate_intcafile is defined
+    src: "{{ acme_certificate_certdir }}/{{ _acme_certificate_intcafile }}"
+    dest: "{{ acme_certificate_intcafile }}"
+  when: acme_certificate_intcafile is defined

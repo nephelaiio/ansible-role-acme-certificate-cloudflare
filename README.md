@@ -11,15 +11,22 @@ Please refer to the [defaults file](/defaults/main.yml) for an up to date list o
 
 ## Dependencies
 
-By default this role does not depend on any external roles. If any such dependency is required please [add them](/meta/main.yml) according to [the documentation](http://docs.ansible.com/ansible/playbooks_roles.html#role-dependencies)
+* [[geerlingguy.repo-epel](https://github.com/geerlingguy/ansible-role-repo-epel)]
+* [[nephelaiio.plugins](https://github.com/nephelaiio/ansible-role-plugins)]
+* [[nephelaiio.pip](https://github.com/nephelaiio/ansible-role-pip)]
+
+See the [requirements.yml](requirements) and [meta.yml](meta) files for more details
 
 ## Example Playbook
 
 - hosts: servers
+  vars:
+    acme_certificate_email: ci@nephelai.io
+    acme_certificate_domain: "{{ ansible_fqdn }}"
+    acme_certificate_aws_accesskey_id: "{{ lookup('env', 'AWS_AK_ID') }}"
+    acme_certificate_aws_accesskey_secret: "{{ lookup('env', 'AWS_AK_SECRET') }}"
   roles:
-     - role: nephelaiio.acme-dnschallenge-route53
-       acme_dnschallenge_route53_package_state: latest
-
+    - role: nephelaiio.acme-dnschallenge-route53
 
 ## Testing
 
@@ -29,7 +36,6 @@ Role is tested against the following distributions (docker images):
   * Ubuntu Xenial
   * CentOS 7
   * Debian Stretch
-  * Arch Linux
 
 You can test the role directly from sources using command ` molecule test `
 
