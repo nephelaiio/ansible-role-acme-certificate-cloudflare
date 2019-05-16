@@ -12,18 +12,18 @@
   package:
     name: "{{ acme_certificate_packages }}"
 
-- name: create letsencrypt group
+- name: create acme group
   group:
     name: "{{ acme_certificate_group }}"
 
-- name: add users to letsencrypt group
+- name: add users to acme group
   user:
     name: "{{ item }}"
     groups: "{{ acme_certificate_group }}"
     append: yes
   loop: "{{ acme_certificate_group_members | flatten(levels=1) }}"
 
-- name: create letsencrypt folders
+- name: create acme folders
   file:
     path: "{{ item }}"
     mode: 0755
@@ -64,42 +64,42 @@
 
 - name: create cloudflare dns challenge record
   cloudflare_dns:
-    zone: "{{ letsencrypt_zone }}"
+    zone: "{{ acme_certificate_zone }}"
     type: TXT
     state: present
-    record: "{{ letsencrypt_challenge.challenge_data[letsencrypt_domain]['dns-01']['resource'] }}.{{ letsencrypt_domain }}"
-    value: '"{{ letsencrypt_challenge.challenge_data[letsencrypt_domain]["dns-01"]["resource_value"] }}"'
+    record: "{{ acme_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
+    value: '"{{ acme_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
     account_email: "{{ acme_certificate_cf_account_email }}"
     account_api_token: "{{ acme_certificate_cf_account_token }}"
-  when: "'challenge_data' in letsencrypt_challenge"
+  when: "'challenge_data' in acme_challenge"
 
 - name: wait for txt record propagation
   pause:
     seconds: 60
-  when: "'challenge_data' in letsencrypt_challenge"
+  when: "'challenge_data' in acme_challenge"
 
 - name: validate challenge
   acme_certificate:
-    account_key: "{{ letsencrypt_account_keyfile }}"
+    account_key: "{{ acme_certificate_account_keyfile }}"
     challenge: dns-01
-    csr: "{{ letsencrypt_domain_csrfile }}"
-    dest: "{{ letsencrypt_domain_crtfile }}"
-    fullchain_dest: "{{ letsencrypt_domain_chainfile }}"
-    data: "{{ letsencrypt_challenge }}"
+    csr: "{{ _acme_certificate_domain_csrfile }}"
+    dest: "{{ _acme_certificate_domain_crtfile }}"
+    fullchain_dest: "{{ _acme_certificate_domain_chainfile }}"
+    data: "{{ acme_certificate_challenge }}"
     terms_agreed: yes
-    acme_directory: https://acme-v01.api.letsencrypt.org/directory
-  when: "'challenge_data' in letsencrypt_challenge"
+    acme_directory: "{{ acme_certificate_directory }}"
+  when: "'challenge_data' in acme_certificate_challenge"
 
 - name: delete cloudflare dns challenge record
   cloudflare_dns:
-    zone: "{{ letsencrypt_zone }}"
+    zone: "{{ acme_certificate_zone }}"
     type: TXT
     state: absent
-    record: "{{ letsencrypt_challenge.challenge_data[letsencrypt_domain]['dns-01']['resource'] }}.{{ letsencrypt_domain }}"
-    value: '"{{ letsencrypt_challenge.challenge_data[letsencrypt_domain]["dns-01"]["resource_value"] }}"'
+    record: "{{ acme_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
+    value: '"{{ acme_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
     account_email: "{{ cloudflare_api_email }}"
     account_api_token: "{{ cloudflare_api_token }}"
-  when: "'challenge_data' in letsencrypt_challenge"
+  when: "'challenge_data' in acme_challenge"
   ignore_errors: yes
 
 - name: manage keyfile permissions
@@ -110,13 +110,13 @@
     mode: 0640
     state: file
 
-- name: retrieve letsencrypt root ca file
+- name: retrieve acme root ca file
   get_url:
     url: "{{ acme_certificate_caurl }}"
     dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
     mode: 0644
 
-- name: retrieve letsencrypt intermediate ca file
+- name: retrieve acme intermediate ca file
   get_url:
     url: "{{ acme_certificate_intcaurl }}"
     dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_intcafile }}"
@@ -124,12 +124,12 @@
 
 - block:
 
-    - name: create letsencrypt ca root dir
+    - name: create acme ca root dir
       file:
         state: directory
         dest: "{{ acme_certificate_storedir }}"
 
-    - name: copy letsencrypt root ca file to trust store
+    - name: copy acme root ca file to trust store
       copy:
         mode: preserve
         remote_src: yes
