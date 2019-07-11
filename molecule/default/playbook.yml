@@ -3,4 +3,4 @@
   hosts: all
   serial: 1
   roles:
-    - role: acme-dnschallenge-cloudflare
+    - role: acme_certificate_cloudflare
