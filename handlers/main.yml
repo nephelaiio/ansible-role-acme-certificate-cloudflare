@@ -1,7 +1,0 @@
----
-# - name: restart acme-dnschallenge-route53
-#   become: yes
-#   service:
-#     name: "{{ item }}"
-#     state: restarted
-#   with_items: "{{ acme_dnschallenge_route53_service_names }}"
