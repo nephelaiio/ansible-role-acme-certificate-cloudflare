@@ -107,6 +107,7 @@
         fullchain_dest: "{{ _acme_certificate_domain_chainfile }}"
         data: "{{ acme_certificate_challenge }}"
         terms_agreed: yes
+        acme_version: "{{ acme_certificate_api_version }}"
         acme_directory: "{{ acme_certificate_directory }}"
       delay: "{{ acme_certificate_challenge_ttl }}"
 
