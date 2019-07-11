@@ -21,7 +21,7 @@ provisioner:
   inventory:
     group_vars:
       all:
-        acme_certificate_directory: https://acme-staging.api.letsencrypt.org/directory
+        acme_certificate_directory: https://acme-staging-v02.api.letsencrypt.org/directory
         acme_certificate_email: ci@nephelai.io
         acme_certificate_domain: "{{ ansible_hostname }}.dantofa.com"
         acme_certificate_caurl: https://letsencrypt.org/certs/fakelerootx1.pem
