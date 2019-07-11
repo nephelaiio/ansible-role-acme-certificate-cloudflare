@@ -25,6 +25,8 @@ galaxy_info:
     - cloudflare
 
 dependencies:
+  - role: nephelaiio.pip
+    version: 3.0.0
   - role: nephelaiio.plugins
     version: 1.0.12
   - role: geerlingguy.repo-epel
