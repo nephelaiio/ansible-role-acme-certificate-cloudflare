@@ -6,11 +6,16 @@
         - "vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
         - "vars/{{ ansible_distribution }}.yml"
         - "vars/{{ ansible_os_family }}.yml"
-      skip: true
+        - "vars/main.yml"
 
 - name: install package requirements
   package:
     name: "{{ acme_certificate_packages }}"
+
+- name: install pip requirements
+  pip:
+    name:
+      - dnspython
 
 - name: create acme group
   group:
@@ -34,18 +39,29 @@
     - "{{ acme_certificate_keydir }}"
 
 - name: create key
-  shell: 'ssh-keygen -t rsa -b 2048 -C "{{ acme_certificate_email }}" -f {{ acme_certificate_account_keyfile }} -q -N ""'
+  shell: |
+    ssh-keygen -t rsa -b 2048 -q \
+      -C "{{ acme_certificate_email }}" \
+      -f {{ acme_certificate_account_keyfile }} -N ""
   args:
-    creates: "{{ acme_certificate_account_keyfile }}"
+    creates: "{{ acme_certificate_account_keyfile }}"  # noqa 305
 
 - name: create domain key
-  shell: 'ssh-keygen -t rsa -b 2048 -C "{{ acme_certificate_email }}" -f {{ _acme_certificate_domain_keyfile }} -q -N ""'
+  shell: |
+    ssh-keygen -t rsa -b 2048 -q \
+      -C "{{ acme_certificate_email }}" \
+      -f {{ _acme_certificate_domain_keyfile }} \
+      -N ""
   args:
-    creates: "{{ _acme_certificate_domain_keyfile }}"
+    creates: "{{ _acme_certificate_domain_keyfile }}"  # noqa 305
 
 - name: create csr
-  shell: 'openssl req -new -nodes -key {{ _acme_certificate_domain_keyfile }} -out {{ _acme_certificate_domain_csrfile }} -subj "/CN={{ acme_certificate_domain }}"'
-  changed_when: false
+  shell: |
+    openssl req -new -nodes \
+      -key {{ _acme_certificate_domain_keyfile }} \
+      -out {{ _acme_certificate_domain_csrfile }} \
+      -subj "/CN={{ acme_certificate_domain }}"
+  changed_when: false  # noqa 305
 
 - name: create challenge
   acme_certificate:
@@ -55,6 +71,8 @@
     dest: "{{ _acme_certificate_domain_crtfile }}"
     fullchain_dest: "{{ _acme_certificate_domain_chainfile }}"
     terms_agreed: yes
+    acme_version: "{{ acme_certificate_api_version }}"
+    acme_directory: "{{ acme_certificate_directory }}"
   register: acme_certificate_challenge
 
 - name: install epel
@@ -62,45 +80,46 @@
     name: geerlingguy.repo-epel
   when: ansible_os_family == 'RedHat'
 
-- name: create cloudflare dns challenge record
-  cloudflare_dns:
-    zone: "{{ acme_certificate_zone }}"
-    type: TXT
-    state: present
-    record: "{{ acme_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
-    value: '"{{ acme_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
-    account_email: "{{ acme_certificate_cf_account_email }}"
-    account_api_token: "{{ acme_certificate_cf_account_token }}"
-  when: "'challenge_data' in acme_challenge"
+- block:
 
-- name: wait for txt record propagation
-  pause:
-    seconds: 60
-  when: "'challenge_data' in acme_challenge"
+    - name: create cloudflare dns challenge record
+      cloudflare_dns:
+        zone: "{{ acme_certificate_zone }}"
+        type: TXT
+        state: present
+        record: "{{ acme_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
+        value: '"{{ acme_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
+        account_email: "{{ acme_certificate_cf_account_email }}"
+        account_api_token: "{{ acme_certificate_cf_account_token }}"
 
-- name: validate challenge
-  acme_certificate:
-    account_key: "{{ acme_certificate_account_keyfile }}"
-    challenge: dns-01
-    csr: "{{ _acme_certificate_domain_csrfile }}"
-    dest: "{{ _acme_certificate_domain_crtfile }}"
-    fullchain_dest: "{{ _acme_certificate_domain_chainfile }}"
-    data: "{{ acme_certificate_challenge }}"
-    terms_agreed: yes
-    acme_directory: "{{ acme_certificate_directory }}"
-  when: "'challenge_data' in acme_certificate_challenge"
+    - name: wait for txt record propagation
+      pause:
+        seconds: 60
 
-- name: delete cloudflare dns challenge record
-  cloudflare_dns:
-    zone: "{{ acme_certificate_zone }}"
-    type: TXT
-    state: absent
-    record: "{{ acme_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
-    value: '"{{ acme_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
-    account_email: "{{ cloudflare_api_email }}"
-    account_api_token: "{{ cloudflare_api_token }}"
-  when: "'challenge_data' in acme_challenge"
-  ignore_errors: yes
+    - name: validate challenge
+      acme_certificate:
+        account_key: "{{ acme_certificate_account_keyfile }}"
+        challenge: dns-01
+        csr: "{{ _acme_certificate_domain_csrfile }}"
+        dest: "{{ _acme_certificate_domain_crtfile }}"
+        fullchain_dest: "{{ _acme_certificate_domain_chainfile }}"
+        data: "{{ acme_certificate_challenge }}"
+        terms_agreed: yes
+        acme_directory: "{{ acme_certificate_directory }}"
+
+  always:
+
+    - name: delete cloudflare dns challenge record
+      cloudflare_dns:
+        zone: "{{ acme_certificate_zone }}"
+        type: TXT
+        state: absent
+        record: "{{ acme_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
+        value: '"{{ acme_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
+        account_email: "{{ cloudflare_api_email }}"
+        account_api_token: "{{ cloudflare_api_token }}"
+
+  when: acme_certificate_challenge is changed
 
 - name: manage keyfile permissions
   file:
