@@ -1,6 +1,4 @@
 ---
-# acme_certificate_cf_account_email: set to cloudflare token email
-# acme_certificate_cf_account_token: set to cloudflare token email
 acme_certificate_group: acme
 acme_certificate_group_members: []
 acme_certificate_add_ca: "{{ certificate_add_ca | default(False) }}"
@@ -14,6 +12,8 @@ acme_certificate_cf_account_token: "{{ lookup('env', 'CF_ACCOUNT_TOKEN') }}"
 acme_certificate_zone: "{{ acme_certificate_domain | split_with('.') | tail | join('.') }}"
 acme_certificate_caurl: https://letsencrypt.org/certs/isrgrootx1.pem.txt
 acme_certificate_intcaurl: https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt
+acme_certificate_challenge_ttl: 30
+acme_certificate_api_version: 2
 _acme_certificate_domain_keyfile: "{{ acme_certificate_keydir }}/id_rsa.{{ acme_certificate_domain }}"
 _acme_certificate_domain_csrfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.csr"
 _acme_certificate_domain_crtfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.crt"
@@ -23,6 +23,6 @@ _acme_certificate_intcafile: "{{ acme_certificate_intcaurl | urlsplit('path') | 
 acme_certificate_directory: https://acme-v01.api.letsencrypt.org/directory
 # acme_certificate_cafile: define to create symlink to issuing ca cert file
 # acme_certificate_intcafile: define to create symlink to issuing ca cert file
-# acme_certificate_cerfile: define to create symlink to cert file
+# acme_certificate_certfile: define to create symlink to cert file
 # acme_certificate_chainfile: define to create symlink to certificate chain file
 # acme_certificate_keyfile: define to create symlink to key file

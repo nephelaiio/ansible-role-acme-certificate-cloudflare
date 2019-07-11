@@ -89,12 +89,14 @@
         state: present
         record: "{{ acme_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
         value: '"{{ acme_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
+        ttl: "{{ acme_certificate_challenge_ttl }}"
         account_email: "{{ acme_certificate_cf_account_email }}"
         account_api_token: "{{ acme_certificate_cf_account_token }}"
 
-    - name: wait for txt record propagation
+
+    - name: wait for txt record expiration
       pause:
-        seconds: 60
+        seconds: "{{ (acme_certificate_challenge_ttl | int) * 2 }}"
 
     - name: validate challenge
       acme_certificate:
@@ -106,6 +108,7 @@
         data: "{{ acme_certificate_challenge }}"
         terms_agreed: yes
         acme_directory: "{{ acme_certificate_directory }}"
+      delay: "{{ acme_certificate_challenge_ttl }}"
 
   always:
 
@@ -116,6 +119,7 @@
         state: absent
         record: "{{ acme_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
         value: '"{{ acme_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
+        ttl: "{{ acme_certificate_challenge_ttl }}"
         account_email: "{{ cloudflare_api_email }}"
         account_api_token: "{{ cloudflare_api_token }}"
 
