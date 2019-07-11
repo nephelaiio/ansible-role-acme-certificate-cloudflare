@@ -120,8 +120,8 @@
         record: "{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
         value: '"{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
         ttl: "{{ acme_certificate_challenge_ttl }}"
-        account_email: "{{ cloudflare_api_email }}"
-        account_api_token: "{{ cloudflare_api_token }}"
+        account_email: "{{ acme_certificate_cf_account_email }}"
+        account_api_token: "{{ acme_certificate_cf_account_token }}"
 
   when: acme_certificate_challenge is changed
 
