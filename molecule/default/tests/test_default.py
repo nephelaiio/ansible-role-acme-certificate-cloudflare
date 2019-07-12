@@ -10,14 +10,14 @@ def test_chain(host):
     certdir = "/etc/letsencrypt/live"
     intcert = f"{certdir}/fakeleintermediatex1.pem"
     cacert = f"{certdir}/fakelerootx1.pem"
-    crtfile = f"{certdir}/*.nephelai.io.crt"
+    crtfile = f"{certdir}/*.dantofa.com.crt"
     cmd = f"openssl verify -CAfile {cacert} -untrusted {intcert} {crtfile}"
     assert host.run_test(cmd).rc == 0
 
 
 def test_key(host):
     keydir = "/etc/letsencrypt/keys"
-    cmd = f"openssl rsa -in {keydir}/*.nephelai.io"
+    cmd = f"openssl rsa -in {keydir}/*.dantofa.com"
     assert host.run_test(cmd).rc == 0
 
 
