@@ -1,9 +1,9 @@
-# nephelaiio.acme-dnschallenge-cloudflare
+# nephelaiio.acme-certificate-cloudflare
 
-[![Build Status](https://travis-ci.org/nephelaiio/ansible-role-acme-dnschallenge-cloudflare.svg?branch=master)](https://travis-ci.org/nephelaiio/ansible-role-acme-dnschallenge-cloudflare)
-[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.acme-dnschallenge-cloudflare-blue.svg)](https://galaxy.ansible.com/nephelaiio/acme-dnschallenge-cloudflare/)
+[![Build Status](https://travis-ci.org/nephelaiio/ansible-role-acme-certificate-cloudflare.svg?branch=master)](https://travis-ci.org/nephelaiio/ansible-role-acme-certificate-cloudflare)
+[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.acme-certificate-cloudflare-blue.svg)](https://galaxy.ansible.com/nephelaiio/acme-certificate-cloudflare/)
 
-An [ansible role](https://galaxy.ansible.com/nephelaiio/acme-dnschallenge-cloudflare) to issue acme certificates with dns challenge verification using cloudflare's name service
+An [ansible role](https://galaxy.ansible.com/nephelaiio/acme-certificate-cloudflare) to issue acme certificates with dns challenge verification using cloudflare's name service
 
 ## Role Variables
 
@@ -49,8 +49,7 @@ See the [https://raw.githubusercontent.com/nephelaiio/ansible-role-requirements/
     acme_certificate_cf_account_email: ci@dantofa.com
     acme_certificate_cf_account_token: xxxxxxxxxx
   roles:
-    - role: nephelaiio.acme-dnschallenge-cloudflare
-```
+    - role: nephelaiio.acme-certificate-cloudflare
 
 ## Testing
 
