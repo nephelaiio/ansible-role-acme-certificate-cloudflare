@@ -1,7 +1,7 @@
 # nephelaiio.acme-certificate-cloudflare
 
 [![Build Status](https://travis-ci.org/nephelaiio/ansible-role-acme-certificate-cloudflare.svg?branch=master)](https://travis-ci.org/nephelaiio/ansible-role-acme-certificate-cloudflare)
-[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.acme-certificate-cloudflare-blue.svg)](https://galaxy.ansible.com/nephelaiio/acme-certificate-cloudflare/)
+[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.acme_certificate_cloudflare-blue.svg)](https://galaxy.ansible.com/nephelaiio/acme_certificate_cloudflare/)
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/acme-certificate-cloudflare) to issue acme certificates with dns challenge verification using cloudflare's name service
 
