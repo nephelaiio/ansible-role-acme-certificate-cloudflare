@@ -6,14 +6,8 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: centos7
-    image: centos:7
-  - name: xenial
-    image: ubuntu:xenial
   - name: bionic
     image: ubuntu:bionic
-  - name: stretch
-    image: debian:stretch
 provisioner:
   name: ansible
   lint:
