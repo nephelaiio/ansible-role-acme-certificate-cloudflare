@@ -31,7 +31,6 @@ provisioner:
         acme_certificate_chainfile: /tmp/chainfile
         acme_certificate_file: /tmp/crtfile
         acme_certificate_keyfile: /tmp/keyfile
-        acme_certificate_challenge_ttl: 30
 scenario:
   name: default
 verifier:

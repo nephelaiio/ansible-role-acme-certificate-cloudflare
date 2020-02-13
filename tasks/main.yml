@@ -96,7 +96,7 @@
 
     - name: wait for txt record expiration
       pause:
-        seconds: "{{ (acme_certificate_challenge_ttl | int) * 2 }}"
+        seconds: "{{ acme_certificate_challenge_wait }}"
 
     - name: validate challenge
       acme_certificate:
