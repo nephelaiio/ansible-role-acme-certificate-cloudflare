@@ -8,6 +8,8 @@ lint:
 platforms:
   - name: bionic
     image: ubuntu:bionic
+  - name: centos8
+    image: centos:8
 provisioner:
   name: ansible
   lint:
