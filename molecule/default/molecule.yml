@@ -8,6 +8,8 @@ lint:
 platforms:
   - name: bionic
     image: ubuntu:bionic
+  - name: debian
+    image: debian:buster
 provisioner:
   name: ansible
   lint:
