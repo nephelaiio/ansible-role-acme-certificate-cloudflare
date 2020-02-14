@@ -16,6 +16,7 @@
   pip:
     name:
       - dnspython
+      - cryptography
 
 - name: create acme group
   group:
