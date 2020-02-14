@@ -122,14 +122,6 @@
 
   when: acme_certificate_challenge is changed
 
-- name: manage keyfile permissions
-  file:
-    path: "{{ _acme_certificate_domain_keyfile }}"
-    owner: root
-    group: "{{ acme_certificate_group }}"
-    mode: 0640
-    state: file
-
 - name: retrieve acme root ca file
   get_url:
     url: "{{ acme_certificate_caurl }}"
