@@ -1,7 +1,7 @@
 FROM {{ item.image }}
 
 RUN if [ $(command -v apt-get) ]; then apt-get update && apt-get upgrade -y && apt-get install -y python sudo bash ca-certificates locales netbase systemd systemd-sysv bind9-host iproute2 && apt-get clean && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen; \
-    elif [ $(command -v yum) ]; then yum makecache fast && yum update -y && yum install -y python sudo yum-plugin-ovl bash bind-utils iproute && sed -i 's/plugins=0/plugins=1/g' /etc/yum.conf && yum clean all; \
+    elif [ $(command -v yum) ]; then yum makecache && yum update -y && yum install --skip-broken -y python python3 sudo yum-plugin-ovl bash && sed -i 's/plugins=0/plugins=1/g' /etc/yum.conf && yum clean all; \
     elif [ $(command -v pacman) ]; then pacman -Syy && pacman -Sy --noconfirm python python2 sudo sed gzip systemd systemd-sysvcompat bind-tools iproute2 && sed -i -e 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen; fi
 
 ENV LANG en_US.UTF-8
