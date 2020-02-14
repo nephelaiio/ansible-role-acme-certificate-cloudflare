@@ -8,8 +8,14 @@ lint:
 platforms:
   - name: bionic
     image: ubuntu:bionic
+  - name: xenial
+    image: ubuntu:xenial
   - name: centos8
     image: centos:8
+  - name: centos7
+    image: centos:7
+  - name: buster
+    image: debian:buster
 provisioner:
   name: ansible
   lint:
