@@ -140,7 +140,6 @@
       file:
         state: directory
         dest: "{{ acme_certificate_storedir }}"
-        mode: 0750
 
     - name: copy acme root ca file to trust store
       copy:
