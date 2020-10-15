@@ -46,7 +46,7 @@ See the [https://raw.githubusercontent.com/nephelaiio/ansible-role-requirements/
   vars:
     acme_certificate_email: ci@nephelai.io
     acme_certificate_domain: "{{ ansible_fqdn }}"
-    acme_certificate_cf_account_email: ci@dantofa.com
+    acme_certificate_cf_account_email: ci@nephelai.io
     acme_certificate_cf_account_token: xxxxxxxxxx
   roles:
     - role: nephelaiio.acme-certificate-cloudflare
