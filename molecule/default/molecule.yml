@@ -3,8 +3,10 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
-  name: yamllint
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
 platforms:
   - name: bionic
     image: ubuntu:bionic
@@ -18,8 +20,6 @@ platforms:
     image: debian:buster
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
   inventory:
     host_vars:
       bionic:
@@ -36,9 +36,5 @@ provisioner:
         acme_certificate_chainfile: /tmp/chainfile
         acme_certificate_file: /tmp/crtfile
         acme_certificate_keyfile: /tmp/keyfile
-scenario:
-  name: default
 verifier:
   name: testinfra
-  lint:
-    name: flake8
