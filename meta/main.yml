@@ -9,14 +9,12 @@ galaxy_info:
     - name: EL
       versions:
         - 7
-        - 8
     - name: Ubuntu
       versions:
-        - xenial
+        - focal
         - bionic
     - name: Debian
       versions:
-        - stretch
         - buster
   galaxy_tags:
     - acme
@@ -26,9 +24,6 @@ galaxy_info:
 
 dependencies:
   - role: nephelaiio.pip
-    version: 3.0.0
   - role: nephelaiio.plugins
-    version: 1.0.12
   - role: geerlingguy.repo-epel
-    version: 1.2.3
     when: ansible_os_family == 'RedHat'

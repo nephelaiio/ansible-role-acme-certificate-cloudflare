@@ -1,6 +1,10 @@
 ---
 - name: Converge
   hosts: all
-  serial: 1
+  pre_tasks:
+    - name: update apt package cache
+      apt:
+        update_cache: yes
+      when: (ansible_os_family | lower) == 'debian'
   roles:
-    - role: acme_certificate_cloudflare
+    - role: nephelaiio.acme_certificate_cloudflare
