@@ -1,6 +1,6 @@
 # nephelaiio.acme-certificate-cloudflare
 
-[![Build Status](https://travis-ci.org/nephelaiio/ansible-role-acme-certificate-cloudflare.svg?branch=master)](https://travis-ci.org/nephelaiio/ansible-role-acme-certificate-cloudflare)
+[![Build Status](https://github.com/nephelaiio/ansible-role-acme-certificate-cloudflare/workflows/CI/badge.svg)](https://github.com/nephelaiio/ansible-role-acme-certificate-cloudflare/actions)
 [![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.acme_certificate_cloudflare-blue.svg)](https://galaxy.ansible.com/nephelaiio/acme_certificate_cloudflare/)
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/acme-certificate-cloudflare) to issue acme certificates with dns challenge verification using cloudflare's name service
@@ -56,7 +56,10 @@ See the [https://raw.githubusercontent.com/nephelaiio/ansible-role-requirements/
 Please make sure your environment has [docker](https://www.docker.com) installed in order to run role validation tests. Additional python dependencies are listed in the [requirements file](/requirements.txt)
 
 Role is tested against the following distributions (docker images):
+  * Ubuntu Focal
   * Ubuntu Bionic
+  * Debian Buster
+  * CentOS 7
 
 You can test the role directly from sources using command ` molecule test `
 
