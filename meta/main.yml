@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: acme_certificate_cloudflare
-  author: Ted Cook
+  author: nephelaiio
   description: An ansible role to generate acme certificates using dns challenges with cloudflare dns
   license: MIT
   min_ansible_version: 2.2
