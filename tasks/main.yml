@@ -120,6 +120,8 @@
         ttl: "{{ acme_certificate_challenge_ttl }}"
         account_email: "{{ acme_certificate_cf_account_email }}"
         account_api_token: "{{ acme_certificate_cf_account_token }}"
+      retries: 10
+      delay: 10
 
   when: acme_certificate_challenge is changed
 
