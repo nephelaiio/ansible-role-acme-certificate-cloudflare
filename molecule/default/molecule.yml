@@ -21,7 +21,7 @@ provisioner:
       all:
         acme_certificate_directory: https://acme-staging-v02.api.letsencrypt.org/directory
         acme_certificate_email: ci@nephelai.io
-        acme_certificate_domain: "cloudflare-${MOLECULE_DOCKER_IMAGE}.home.nephelai.io"
+        acme_certificate_domain: "cloudflare-${MOLECULE_DOCKER_IMAGE}.nephelai.io"
         acme_certificate_caurl: https://letsencrypt.org/certs/fakelerootx1.pem
         acme_certificate_intcaurl: https://letsencrypt.org/certs/fakeleintermediatex1.pem
         acme_certificate_cafile: /tmp/cafile
