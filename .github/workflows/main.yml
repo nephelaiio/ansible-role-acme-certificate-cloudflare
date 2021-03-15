@@ -1,5 +1,5 @@
 ---
-name: CI
+name: ci
 
 on:
   pull_request:
@@ -16,7 +16,7 @@ defaults:
 jobs:
 
   lint:
-    name: Lint
+    name: lint
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
@@ -37,7 +37,7 @@ jobs:
           ansible-lint .
 
   molecule:
-    name: Molecule
+    name: molecule
     runs-on: ubuntu-latest
     strategy:
       matrix:
