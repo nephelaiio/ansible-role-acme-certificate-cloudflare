@@ -30,10 +30,12 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible-lint[community,yamllint]
+        run: pip3 install yamllint ansible-lint ansible
 
       - name: Lint code.
         run: |
+          set -e
+          yamllint .
           ansible-lint .
 
   molecule:
@@ -57,11 +59,14 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install test dependencies.
-        run: pip3 install ansible molecule[docker] docker pytest pytest-testinfra
+      - name: Install poetry
+        run: pip3 install poetry
+
+      - name: Install pips
+        run: poetry install
 
       - name: Run Molecule tests.
-        run: molecule test
+        run: poetry run tox
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'

@@ -1,6 +1,9 @@
 ---
 dependency:
   name: galaxy
+  options:
+    role-file: requirements.yml
+    requirements-file: requirements.yml
 driver:
   name: docker
 platforms:
@@ -14,8 +17,6 @@ platforms:
 provisioner:
   name: ansible
   log: true
-  playbooks:
-    converge: ${MOLECULE_PLAYBOOK:-converge.yml}
   inventory:
     group_vars:
       all:
