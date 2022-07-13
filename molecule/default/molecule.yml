@@ -8,7 +8,7 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: "geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -22,7 +22,7 @@ provisioner:
       all:
         acme_certificate_directory: https://acme-staging-v02.api.letsencrypt.org/directory
         acme_certificate_email: ci@nephelai.io
-        acme_certificate_domain: "cloudflare-${MOLECULE_DOCKER_IMAGE}.nephelai.io"
+        acme_certificate_domain: "cloudflare-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}.nephelai.io"
         acme_certificate_caurl: https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem
         acme_certificate_intcaurl: https://letsencrypt.org/certs/staging/letsencrypt-stg-int-r3.pem
         acme_certificate_cafile: /tmp/cafile
