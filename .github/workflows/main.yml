@@ -78,5 +78,4 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DOCKER_IMAGE: ${{ matrix.image }}
-          CF_ACCOUNT_EMAIL: ${{ secrets.CF_ACCOUNT_EMAIL }}
           CF_ACCOUNT_TOKEN: ${{ secrets.CF_ACCOUNT_TOKEN }}
