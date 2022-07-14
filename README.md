@@ -34,7 +34,6 @@ Please refer to the [defaults file](/defaults/main.yml) for an up to date list o
 
 * [[geerlingguy.repo-epel](https://github.com/geerlingguy/ansible-role-repo-epel)]
 * [[nephelaiio.plugins](https://github.com/nephelaiio/ansible-role-plugins)]
-* [[nephelaiio.pip](https://github.com/nephelaiio/ansible-role-pip)]
 
 See the [https://raw.githubusercontent.com/nephelaiio/ansible-role-requirements/master/requirements.txt](requirements) and [meta.yml](meta) files for more details
 

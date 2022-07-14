@@ -23,7 +23,6 @@ galaxy_info:
     - cloudflare
 
 dependencies:
-  - role: nephelaiio.pip
   - role: nephelaiio.plugins
   - role: geerlingguy.repo-epel
     when: ansible_os_family == 'RedHat'
