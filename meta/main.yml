@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   role_name: acme_certificate_cloudflare
+  namespace: nephelaiio
   author: nephelaiio
   description: An ansible role to generate acme certificates using dns challenges with cloudflare dns
   license: MIT
@@ -8,11 +9,10 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-        - 7
+        - all
     - name: Ubuntu
       versions:
-        - focal
-        - bionic
+        - all
     - name: Debian
       versions:
         - buster
