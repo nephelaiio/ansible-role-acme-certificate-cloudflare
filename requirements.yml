@@ -1,5 +1,6 @@
 ---
 roles:
+  - nephelaiio.pip
   - nephelaiio.plugins
   - geerlingguy.repo-epel
 collections: []
