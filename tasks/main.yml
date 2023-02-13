@@ -60,7 +60,7 @@
     privatekey_path: "{{ _acme_certificate_domain_keyfile }}"
     common_name: "{{ acme_certificate_domain }}"
 
-- name: create challenge
+- name: create acme challenge
   community.crypto.acme_certificate:
     account_key: "{{ acme_certificate_account_keyfile }}"
     challenge: dns-01
@@ -72,12 +72,8 @@
     acme_directory: "{{ acme_certificate_directory }}"
   register: acme_certificate_challenge
 
-- name: install epel
-  ansible.builtin.include_role:
-    name: geerlingguy.repo-epel
-  when: ansible_os_family == 'RedHat'
-
-- name: issue certificate
+- name: validate acme certificate
+  when: acme_certificate_challenge is changed
   block:
 
     - name: create cloudflare dns challenge record
@@ -90,7 +86,6 @@
         ttl: "{{ acme_certificate_challenge_ttl }}"
         account_email: "{{ acme_certificate_cf_account_email }}"
         api_token: "{{ acme_certificate_cf_account_token }}"
-
 
     - name: wait for txt record expiration
       ansible.builtin.pause:
@@ -121,8 +116,6 @@
         ttl: "{{ acme_certificate_challenge_ttl }}"
         account_email: "{{ acme_certificate_cf_account_email }}"
         api_token: "{{ acme_certificate_cf_account_token }}"
-
-  when: acme_certificate_challenge is changed
 
 - name: retrieve acme root ca file
   ansible.builtin.get_url:
