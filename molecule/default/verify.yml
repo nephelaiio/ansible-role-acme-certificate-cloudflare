@@ -3,44 +3,28 @@
 
   hosts: all
 
-  roles:
+  vars:
+
+    certdir: "/etc/letsencrypt"
+    cacert: "{{ certdir }}/live/letsencrypt-stg-root-x1.pem"
+    intcert: "{{ certdir }}/live/letsencrypt-stg-int-r3.pem"
+    crtfile: "{{ certdir }}/live/{{ acme_certificate_domain }}.crt"
+    keyfile: "{{ certdir }}/keys/id_rsa.{{ acme_certificate_domain }}"
+    calink: "/tmp/cafile"
+    keylink: "/tmp/keyfile"
+    intlink: "/tmp/intfile"
+    crtlink: "/tmp/crtfile"
+
+  tasks:
 
     - name: test certificate chain
       ansible.builtin.command: "openssl verify -CAfile {{ cacert }} -untrusted {{ intcert }} {{ crtfile }}"
-      vars:
-        certdir: "/etc/letsencrypt/live"
-        intcert: "{{ certdir }}/letsencrypt-stg-int-r3.pem"
-        cacert: "{{ certdir }}/letsencrypt-stg-root-x1.pem"
-        crtfile: "{{ certdir }}/*.nephelai.io.crt"
 
     - name: test certificate key
-      ansible.builtin.command: "openssl rsa -in /etc/letsencrypt/keys/*.nephelai.io"
-
-    - name: stat root cert symlink
-      ansible.builtin.stat:
-        path: "/tmp/cafile"
-      register: root_ca
-
-    - debug: root_ca
-
-    - name: test root cert symlink
-      ansible.builtin.fail:
-        msg: ""
-      when: not root_ca.stat.exists or not root_ca.stat.symlink
-
-    - fail:
-      vars:
-        intcert:
-        cacert: "/etc/letsencrypt/live/letsencrypt-stg-root-x1.pem"
-        intlink: "/tmp/intfile"
-        crtlink: "/tmp/crtfile"
-
-    - name: test certificate key symlinks
-      ansible.builtin.command: "openssl rsa -in /tmp/keyfile"
+      ansible.builtin.command: "openssl rsa -in {{ keyfile }}"
 
     - name: test certificate chain symlinks
-      ansible.builtin.command: "openssl verify -CAfile {{ cacert }} -untrusted {{ intcert }} {{ crtfile }}"
-      vars:
-        intcer: "/tmp/intfile"
-        cacer: "/tmp/cafile"
-        crtfil: "/tmp/crtfile"
+      ansible.builtin.command: "openssl verify -CAfile {{ calink }} -untrusted {{ intlink }} {{ crtlink }}"
+
+    - name: test certificate key symlinks
+      ansible.builtin.command: "openssl rsa -in {{ keylink }}"
