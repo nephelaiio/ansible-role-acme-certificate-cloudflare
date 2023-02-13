@@ -3,7 +3,7 @@
 
   hosts: all
 
-  pre_tasks:
+  tasks:
 
     - name: update apt package cache
       apt:
