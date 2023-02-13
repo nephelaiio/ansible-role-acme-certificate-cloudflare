@@ -40,8 +40,10 @@ jobs:
       - name: Lint code.
         run: |
           set -e
+          poetry run yamllint --version
           poetry run yamllint .
-          poetry run ansible-lint .
+          poetry run ansible-lint --version
+          poetry run ansible-lint . -c .ansible-lint.yml
 
   molecule:
 
