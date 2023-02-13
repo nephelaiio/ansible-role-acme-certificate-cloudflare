@@ -13,7 +13,6 @@ platforms:
     cgroupns_mode: private
 provisioner:
   name: ansible
-  log: true
   inventory:
     group_vars:
       all:
