@@ -60,7 +60,8 @@ Role is tested against the following distributions (docker images):
   * Ubuntu Bionic
   * Debian Bullseye
   * Debian Buster
-  * CentOS 7
+  * Rocky Linux 8
+  * Rocky Linux 9
 
 You can test the role directly from sources using command ` molecule test `
 
