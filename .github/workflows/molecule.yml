@@ -1,5 +1,5 @@
 ---
-name: ci
+name: molecule
 
 on:
 
@@ -50,6 +50,7 @@ jobs:
     strategy:
       matrix:
         image:
+          - ubuntu2204
           - ubuntu2004
           - ubuntu1804
           - debian10
@@ -73,7 +74,7 @@ jobs:
         run: poetry install
 
       - name: Run Molecule tests.
-        run: poetry run tox
+        run: poetry run molecule test
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'

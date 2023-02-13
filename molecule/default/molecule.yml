@@ -1,22 +1,18 @@
 ---
 dependency:
   name: galaxy
-  options:
-    role-file: requirements.yml
-    requirements-file: requirements.yml
 driver:
   name: docker
 platforms:
   - name: instance
     image: "geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}-ansible:latest"
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
+    privileged: false
     pre_build_image: true
+    cgroupns_mode: private
 provisioner:
   name: ansible
-  log: true
   inventory:
     group_vars:
       all:
@@ -33,4 +29,4 @@ provisioner:
 scenario:
   name: default
 verifier:
-  name: testinfra
+  name: ansible
