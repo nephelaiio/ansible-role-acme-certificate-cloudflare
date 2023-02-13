@@ -87,7 +87,7 @@
         account_email: "{{ acme_certificate_cf_account_email }}"
         api_token: "{{ acme_certificate_cf_account_token }}"
 
-    - name: wait for txt record expiration
+    - name: wait for txt record replication
       ansible.builtin.pause:
         seconds: "{{ acme_certificate_challenge_wait }}"
 
