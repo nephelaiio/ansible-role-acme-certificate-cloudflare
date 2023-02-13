@@ -5,12 +5,12 @@ description = ""
 authors = ["Ted Cook <teodoro.cook@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 
 [tool.poetry.dev-dependencies]
 ansible-lint = "~5"
 yamllint = "^1.27.1"
-ansible = "^6.1.0"
+ansible = "^7.0.0"
 netaddr = "^0.8.0"
 markupsafe = "2.0.1"
 molecule = {extras = ["docker"], version = "^4.0.4"}
