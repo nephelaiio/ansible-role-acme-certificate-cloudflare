@@ -1,0 +1,6 @@
+---
+warn_list:
+  - experimental
+  - command-instead-of-module
+skip_list:
+  - name[casing]
