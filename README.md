@@ -58,6 +58,7 @@ Role is tested against the following distributions (docker images):
   * Ubuntu Jammy
   * Ubuntu Focal
   * Ubuntu Bionic
+  * Debian Bullseye
   * Debian Buster
   * CentOS 7
 

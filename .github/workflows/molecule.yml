@@ -53,6 +53,7 @@ jobs:
           - ubuntu2204
           - ubuntu2004
           - ubuntu1804
+          - debian11
           - debian10
           - centos7
 
