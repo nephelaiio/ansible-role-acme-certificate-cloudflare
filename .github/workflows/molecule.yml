@@ -2,7 +2,6 @@
 name: molecule
 
 on:
-
   pull_request:
   push:
     branches:
@@ -11,12 +10,10 @@ on:
     - cron: "0 5 * * 0"
 
 defaults:
-
   run:
-    working-directory: 'nephelaiio.acme_certificate_cloudflare'
+    working-directory: "nephelaiio.acme_certificate_cloudflare"
 
 jobs:
-
   lint:
     name: lint
     runs-on: ubuntu-latest
@@ -24,12 +21,12 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: 'nephelaiio.acme_certificate_cloudflare'
+          path: "nephelaiio.acme_certificate_cloudflare"
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install poetry
         run: pip3 install poetry
@@ -46,7 +43,6 @@ jobs:
           poetry run ansible-lint . -c .ansible-lint.yml
 
   molecule:
-
     name: molecule
     runs-on: ubuntu-latest
     strategy:
@@ -64,12 +60,12 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: 'nephelaiio.acme_certificate_cloudflare'
+          path: "nephelaiio.acme_certificate_cloudflare"
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install poetry
         run: pip3 install poetry
@@ -80,8 +76,7 @@ jobs:
       - name: Run Molecule tests.
         run: poetry run molecule test
         env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
           MOLECULE_DOCKER_IMAGE: ${{ matrix.image }}
-          CF_ACCOUNT_EMAIL: ${{ secrets.CF_ACCOUNT_EMAIL }}
           CF_ACCOUNT_TOKEN: ${{ secrets.CF_ACCOUNT_TOKEN }}
