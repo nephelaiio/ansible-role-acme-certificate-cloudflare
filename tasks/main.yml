@@ -75,7 +75,6 @@
 - name: validate acme certificate
   when: acme_certificate_challenge is changed
   block:
-
     - name: create cloudflare dns challenge record
       community.general.cloudflare_dns:
         zone: "{{ acme_certificate_zone }}"
@@ -84,7 +83,6 @@
         record: "{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
         value: '"{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
         ttl: "{{ acme_certificate_challenge_ttl }}"
-        account_email: "{{ acme_certificate_cf_account_email }}"
         api_token: "{{ acme_certificate_cf_account_token }}"
 
     - name: wait for txt record replication
@@ -105,7 +103,6 @@
       delay: "{{ acme_certificate_challenge_ttl }}"
 
   always:
-
     - name: delete cloudflare dns challenge record
       community.general.cloudflare_dns:
         zone: "{{ acme_certificate_zone }}"
@@ -114,7 +111,6 @@
         record: "{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]['dns-01']['resource'] }}.{{ acme_certificate_domain }}"
         value: '"{{ acme_certificate_challenge.challenge_data[acme_certificate_domain]["dns-01"]["resource_value"] }}"'
         ttl: "{{ acme_certificate_challenge_ttl }}"
-        account_email: "{{ acme_certificate_cf_account_email }}"
         api_token: "{{ acme_certificate_cf_account_token }}"
 
 - name: retrieve acme root ca file
@@ -131,7 +127,6 @@
 
 - name: configure local certificate chain
   block:
-
     - name: create acme ca root dir
       ansible.builtin.file:
         state: directory
