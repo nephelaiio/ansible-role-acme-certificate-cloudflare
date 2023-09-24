@@ -1,5 +1,5 @@
 ---
-name: ling
+name: lint
 
 on:
   pull_request:
