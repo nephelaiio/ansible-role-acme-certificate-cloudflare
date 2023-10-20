@@ -31,9 +31,17 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Ansible.
-        run: pip3 install ansible-base
+      - name: Update ubuntu repositories
+        run: sudo apt-get update
 
-      - name: Trigger a new import on Galaxy.
-        run: >-
-          ansible-galaxy role import --api-key ${{ secrets.GALAXY_API_KEY }} $(echo $GITHUB_REPOSITORY | cut -d/ -f1) $(echo $GITHUB_REPOSITORY | cut -d/ -f2)
+      - name: Install make
+        run: sudo apt-get install -y make
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Trigger a new import on galaxy
+        run: make publish
+        env:
+          GALAXY_API_KEY: "${{ secrets.GALAXY_API_KEY }}"
+          GITHUB_REPOSITORY: "${{ github.repository }}"

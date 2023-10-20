@@ -1,0 +1,5 @@
+# This file contains ignores rule violations for ansible-lint
+meta/main.yml schema[meta]
+molecule/default/verify.yml no-changed-when
+requirements.yml schema[requirements]
+tasks/main.yml no-handler

@@ -1,5 +1,5 @@
 ---
-- name: include variable overrides
+- name: Include variable overrides
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - files:
@@ -8,59 +8,59 @@
         - "vars/{{ ansible_os_family }}.yml"
         - "vars/main.yml"
 
-- name: install package requirements
+- name: Install package requirements
   ansible.builtin.package:
     name: "{{ acme_certificate_packages }}"
 
-- name: install pip requirements
+- name: Install pip requirements
   ansible.builtin.pip:
     name:
       - dnspython
       - cryptography
   changed_when: false
 
-- name: create acme group
+- name: Create acme group
   ansible.builtin.group:
     name: "{{ acme_certificate_group }}"
 
-- name: add users to acme group
+- name: Add users to acme group
   ansible.builtin.user:
     name: "{{ item }}"
     groups: "{{ acme_certificate_group }}"
     append: yes
   loop: "{{ acme_certificate_group_members | flatten(levels=1) }}"
 
-- name: create acme folders
+- name: Create acme folders
   ansible.builtin.file:
     path: "{{ item }}"
-    mode: 0755
     state: directory
     group: "{{ acme_certificate_group }}"
+    mode: 0755
   loop:
     - "{{ acme_certificate_certdir }}"
     - "{{ acme_certificate_keydir }}"
 
-- name: create account key
+- name: Create account key
   community.crypto.openssl_privatekey:
     path: "{{ acme_certificate_account_keyfile }}"
     owner: root
     group: "{{ acme_certificate_group }}"
     mode: 0640
 
-- name: create domain key
+- name: Create domain key
   community.crypto.openssl_privatekey:
     path: "{{ _acme_certificate_domain_keyfile }}"
     owner: root
     group: "{{ acme_certificate_group }}"
     mode: 0640
 
-- name: create csr
+- name: Create csr
   community.crypto.openssl_csr:
     path: "{{ _acme_certificate_domain_csrfile }}"
     privatekey_path: "{{ _acme_certificate_domain_keyfile }}"
     common_name: "{{ acme_certificate_domain }}"
 
-- name: create acme challenge
+- name: Create acme challenge
   community.crypto.acme_certificate:
     account_key: "{{ acme_certificate_account_keyfile }}"
     challenge: dns-01
@@ -72,10 +72,10 @@
     acme_directory: "{{ acme_certificate_directory }}"
   register: acme_certificate_challenge
 
-- name: validate acme certificate
+- name: Validate acme certificate
   when: acme_certificate_challenge is changed
   block:
-    - name: create cloudflare dns challenge record
+    - name: Create cloudflare dns challenge record
       community.general.cloudflare_dns:
         zone: "{{ acme_certificate_zone }}"
         type: TXT
@@ -85,11 +85,11 @@
         ttl: "{{ acme_certificate_challenge_ttl }}"
         api_token: "{{ acme_certificate_cf_account_token }}"
 
-    - name: wait for txt record replication
+    - name: Wait for txt record replication
       ansible.builtin.pause:
         seconds: "{{ acme_certificate_challenge_wait }}"
 
-    - name: validate challenge
+    - name: Validate challenge
       community.crypto.acme_certificate:
         account_key: "{{ acme_certificate_account_keyfile }}"
         challenge: dns-01
@@ -103,7 +103,7 @@
       delay: "{{ acme_certificate_challenge_ttl }}"
 
   always:
-    - name: delete cloudflare dns challenge record
+    - name: Delete cloudflare dns challenge record
       community.general.cloudflare_dns:
         zone: "{{ acme_certificate_zone }}"
         type: TXT
@@ -113,73 +113,79 @@
         ttl: "{{ acme_certificate_challenge_ttl }}"
         api_token: "{{ acme_certificate_cf_account_token }}"
 
-- name: retrieve acme root ca file
+- name: Retrieve acme root ca file
   ansible.builtin.get_url:
     url: "{{ acme_certificate_caurl }}"
     dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
     mode: 0644
 
-- name: retrieve acme intermediate ca file
+- name: Retrieve acme intermediate ca file
   ansible.builtin.get_url:
     url: "{{ acme_certificate_intcaurl }}"
     dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_intcafile }}"
     mode: 0644
 
-- name: configure local certificate chain
+- name: Configure local certificate chain
+  when: acme_certificate_add_ca
   block:
-    - name: create acme ca root dir
+    - name: Stat acme ca root dir
+      ansible.builtin.stat:
+        path: "{{ acme_certificate_storedir }}"
+      register: _storedir_query
+
+    - name: Create acme ca root dir
       ansible.builtin.file:
         state: directory
         dest: "{{ acme_certificate_storedir }}"
+        mode: 0755
+      when: not _storedir_query.stat.exists
 
-    - name: copy acme root ca file to trust store
+    - name: Copy acme root ca file to trust store
       ansible.builtin.copy:
         mode: preserve
         remote_src: yes
         src: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
         dest: "{{ acme_certificate_storedir }}/{{ _acme_certificate_cafile }}"
 
-    - name: update ca certificates
+    - name: Update ca certificates
       ansible.builtin.command: update-ca-certificates
       changed_when: false
       when: ansible_os_family == 'Debian'
 
-    - name: update ca certificates
+    - name: Update ca certificates
       ansible.builtin.command: update-ca-trust extract
       changed_when: false
       when: ansible_os_family == 'RedHat'
 
-  when: acme_certificate_add_ca
-
-- name: set certificate file link
+- name: Set certificate file link
   ansible.builtin.file:
     state: link
     src: "{{ _acme_certificate_domain_crtfile }}"
     dest: "{{ acme_certificate_file }}"
   when: acme_certificate_file is defined
 
-- name: set certificate chain link
+- name: Set certificate chain link
   ansible.builtin.file:
     state: link
     src: "{{ _acme_certificate_domain_chainfile }}"
     dest: "{{ acme_certificate_chainfile }}"
   when: acme_certificate_chainfile is defined
 
-- name: set certificate key link
+- name: Set certificate key link
   ansible.builtin.file:
     state: link
     src: "{{ _acme_certificate_domain_keyfile }}"
     dest: "{{ acme_certificate_keyfile }}"
   when: acme_certificate_keyfile is defined
 
-- name: set ca file link
+- name: Set ca file link
   ansible.builtin.file:
     state: link
     src: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
     dest: "{{ acme_certificate_cafile }}"
   when: acme_certificate_cafile is defined
 
-- name: set intca file link
+- name: Set intca file link
   ansible.builtin.file:
     state: link
     src: "{{ acme_certificate_certdir }}/{{ _acme_certificate_intcafile }}"

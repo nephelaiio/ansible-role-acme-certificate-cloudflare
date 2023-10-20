@@ -36,16 +36,23 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install poetry
-        run: pip3 install poetry
+      - name: Update ubuntu repositories
+        run: sudo apt-get update
 
-      - name: Install pips
-        run: poetry install
+      - name: Install make
+        run: sudo apt-get install -y make
 
-      - name: Run Molecule tests.
-        run: poetry run molecule test
+      - name: Install dependencies
+        run: make install
+
+      - name: Debug test environment
+        run: make debug
+
+      - name: Run molecule tests.
+        run: make test
         env:
-          PY_COLORS: "1"
-          ANSIBLE_FORCE_COLOR: "1"
-          MOLECULE_DOCKER_IMAGE: ${{ matrix.image }}
-          CF_ACCOUNT_TOKEN: ${{ secrets.CF_ACCOUNT_TOKEN }}
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DOCKER_IMAGE: ${{ matrix.image.name }}
+          MOLECULE_DOCKER_COMMAND: ${{ matrix.image.command }}
+          MOLECULE_SCENARIO: ${{ matrix.scenario.name }}
