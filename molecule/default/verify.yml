@@ -17,14 +17,14 @@
 
   tasks:
 
-    - name: test certificate chain
+    - name: Test certificate chain
       ansible.builtin.command: "openssl verify -CAfile {{ cacert }} -untrusted {{ intcert }} {{ crtfile }}"
 
-    - name: test certificate key
+    - name: Test certificate key
       ansible.builtin.command: "openssl rsa -in {{ keyfile }}"
 
-    - name: test certificate chain symlinks
+    - name: Test certificate chain symlinks
       ansible.builtin.command: "openssl verify -CAfile {{ calink }} -untrusted {{ intlink }} {{ crtlink }}"
 
-    - name: test certificate key symlinks
+    - name: Test certificate key symlinks
       ansible.builtin.command: "openssl rsa -in {{ keylink }}"
