@@ -3,6 +3,7 @@ name = "nephelaiio.acme_certificate_cloudflare"
 version = "0.1.0"
 description = ""
 authors = ["Ted Cook <teodoro.cook@gmail.com>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
