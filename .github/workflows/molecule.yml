@@ -26,15 +26,15 @@ jobs:
           - rockylinux9
 
     steps:
-      - name: Check out the codebase.
-        uses: actions/checkout@v2
+      - name: Check out the codebase
+        uses: actions/checkout@v3
         with:
           path: "nephelaiio.acme_certificate_cloudflare"
 
-      - name: Set up Python 3.
-        uses: actions/setup-python@v2
+      - name: Set up Python 3
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: "3.11"
 
       - name: Update ubuntu repositories
         run: sudo apt-get update
