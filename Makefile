@@ -12,7 +12,7 @@ all: install version lint test
 
 install:
 	@type poetry >/dev/null || pip3 install poetry
-	@poetry install
+	@poetry install --no-root
 
 lint: install
 	poetry run yamllint .
