@@ -35,7 +35,7 @@
     path: "{{ item }}"
     state: directory
     group: "{{ acme_certificate_group }}"
-    mode: 0755
+    mode: "u=rwx,go=rx"
   loop:
     - "{{ acme_certificate_certdir }}"
     - "{{ acme_certificate_keydir }}"
@@ -45,14 +45,14 @@
     path: "{{ acme_certificate_account_keyfile }}"
     owner: root
     group: "{{ acme_certificate_group }}"
-    mode: 0640
+    mode: "u=rw,g=r,o="
 
 - name: Create domain key
   community.crypto.openssl_privatekey:
     path: "{{ _acme_certificate_domain_keyfile }}"
     owner: root
     group: "{{ acme_certificate_group }}"
-    mode: 0640
+    mode: "u=rw,g=r,o="
 
 - name: Create csr
   community.crypto.openssl_csr:
@@ -117,13 +117,13 @@
   ansible.builtin.get_url:
     url: "{{ acme_certificate_caurl }}"
     dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_cafile }}"
-    mode: 0644
+    mode: "u=rw,go=r"
 
 - name: Retrieve acme intermediate ca file
   ansible.builtin.get_url:
     url: "{{ acme_certificate_intcaurl }}"
     dest: "{{ acme_certificate_certdir }}/{{ _acme_certificate_intcafile }}"
-    mode: 0644
+    mode: "u=rw,go=r"
 
 - name: Configure local certificate chain
   when: acme_certificate_add_ca
@@ -137,7 +137,7 @@
       ansible.builtin.file:
         state: directory
         dest: "{{ acme_certificate_storedir }}"
-        mode: 0755
+        mode: "u=rwx,go=rx"
       when: not _storedir_query.stat.exists
 
     - name: Copy acme root ca file to trust store
