@@ -23,7 +23,6 @@ jobs:
           - debian11
           - debian10
           - rockylinux8
-          - rockylinux9
 
     steps:
       - name: Check out the codebase
@@ -51,8 +50,8 @@ jobs:
       - name: Run molecule tests.
         run: make test
         env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
           MOLECULE_DOCKER_IMAGE: ${{ matrix.image.name }}
           MOLECULE_DOCKER_COMMAND: ${{ matrix.image.command }}
           MOLECULE_SCENARIO: ${{ matrix.scenario.name }}

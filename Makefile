@@ -3,7 +3,7 @@
 MOLECULE_SCENARIO ?= default
 MOLECULE_DOCKER_IMAGE ?= ubuntu2004
 GALAXY_API_KEY ?=
-GITHUB_REPOSITORY ?= $$(git config --get remote.origin.url | cut -d: -f 2 | cut -d. -f 1)
+GITHUB_REPOSITORY ?= $$(git config --get remote.origin.url | cut -d':' -f 2 | cut -d. -f 1)
 GITHUB_ORG = $$(echo ${GITHUB_REPOSITORY} | cut -d/ -f 1)
 GITHUB_REPO = $$(echo ${GITHUB_REPOSITORY} | cut -d/ -f 2)
 REQUIREMENTS = requirements.yml
@@ -12,6 +12,7 @@ all: install version lint test
 
 install:
 	@type poetry >/dev/null || pip3 install poetry
+	@poetry self add poetry-plugin-export
 	@poetry install --no-root
 
 lint: install
@@ -49,4 +50,4 @@ version:
 	@poetry run molecule --version
 
 debug: version
-	@poetry export --dev --without-hashes
+	@poetry export --dev --without-hashes || exit 0
