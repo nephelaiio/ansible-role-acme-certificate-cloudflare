@@ -16,14 +16,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        scenario:
+          - name: default
         image:
-          - ubuntu2204
-          - ubuntu2004
-          - ubuntu1804
-          - debian11
-          - debian10
-          - rockylinux8
-
+          - name: ubuntu2404
+            command: /lib/systemd/systemd
+          - name: ubuntu2204
+            command: /lib/systemd/systemd
+          - name: ubuntu2004
+            command: /lib/systemd/systemd
+          - name: debian12
+            command: /lib/systemd/systemd
+          - name: debian11
+            command: /lib/systemd/systemd
     steps:
       - name: Check out the codebase
         uses: actions/checkout@v3
