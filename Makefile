@@ -10,6 +10,9 @@ REQUIREMENTS = requirements.yml
 
 all: install version lint test
 
+test: lint
+	poetry run molecule test -s ${MOLECULE_SCENARIO}
+
 install:
 	@type poetry >/dev/null || pip3 install poetry
 	@poetry self add poetry-plugin-export
