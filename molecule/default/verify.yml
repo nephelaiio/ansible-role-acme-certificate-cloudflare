@@ -1,12 +1,11 @@
 ---
 - name: Verify
   hosts: all
-  vars:
-    cert_dir: "/etc/letsencrypt"
-    cert_file: "{{ cert_dir }}/live/{{ acme_certificate_domain }}.crt"
   tasks:
     - name: Query certificate issuer
       ansible.builtin.shell: "openssl x509 -in {{ cert_file }} -noout -text | grep Issuer:"
+      vars:
+        cert_file: "/etc/letsencrypt/live/{{ acme_certificate_domain }}.crt"
       register: _issuer_data
       changed_when: false
 
