@@ -35,18 +35,6 @@
     fail_msg: acme_certificate_caurl is required if acme_certificate_add_ca is set
   when: acme_certificate_add_ca | bool
 
-- name: Debug acme_certificate_cf_account_token
-  ansible.builtin.debug:
-    var: acme_certificate_cf_account_token
-
-- name: Debug acme_certificate_api_email
-  ansible.builtin.debug:
-    var: acme_certificate_api_email
-
-- name: Debug acme_certificate_api_token
-  ansible.builtin.debug:
-    var: acme_certificate_api_token
-
 - name: Include variable overrides
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
@@ -120,7 +108,7 @@
     acme_directory: "{{ acme_certificate_directory }}"
   register: acme_certificate_challenge
 
-- name: Validate acme certificate
+- name: Validate acme channelge
   when: acme_certificate_challenge is changed
   block:
     - name: Create cloudflare dns challenge record
@@ -233,30 +221,25 @@
         state: link
         src: "{{ acme_certificate_certdir }}/{{ _acme_certificate_intcafile }}"
         dest: "{{ acme_certificate_intcafile }}"
+      when: acme_certificate_intcafile is defined
 
-- name: Set certificate file link
+- name: Create certificate file link
   ansible.builtin.file:
     state: link
-    src: "{{ _acme_certificate_domain_crtfile }}"
+    src: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.crt"
     dest: "{{ acme_certificate_file }}"
-  vars:
-    _acme_certificate_domain_crtfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.crt"
   when: acme_certificate_file is defined
 
-- name: Set certificate chain link
+- name: Create certificate chain link
   ansible.builtin.file:
     state: link
-    src: "{{ _acme_certificate_domain_chainfile }}"
+    src: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.chain.crt"
     dest: "{{ acme_certificate_chainfile }}"
-  vars:
-    _acme_certificate_domain_chainfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.chain.crt"
   when: acme_certificate_chainfile is defined
 
-- name: Set certificate key link
+- name: Create certificate key link
   ansible.builtin.file:
     state: link
-    src: "{{ _acme_certificate_domain_keyfile }}"
+    src: "{{ acme_certificate_keydir }}/id_rsa.{{ acme_certificate_domain }}"
     dest: "{{ acme_certificate_keyfile }}"
-  vars:
-    _acme_certificate_domain_keyfile: "{{ acme_certificate_keydir }}/id_rsa.{{ acme_certificate_domain }}"
   when: acme_certificate_keyfile is defined
