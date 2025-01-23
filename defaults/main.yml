@@ -7,22 +7,20 @@ acme_certificate_certdir: "{{ acme_certificate_basedir }}/live"
 acme_certificate_keydir: "{{ acme_certificate_basedir }}/keys"
 acme_certificate_account_keyfile: "{{ acme_certificate_keydir }}/id_rsa.letsencrypt"
 acme_certificate_domain: "{{ ansible_fqdn }}"
-acme_certificate_cf_account_token: "{{ lookup('env', 'CF_ACCOUNT_TOKEN') }}"
+# acme_certificate_cf_account_token: "{{ lookup('env', 'CF_ACCOUNT_TOKEN') }}"
+# acme_certificate_api_email: "{{ lookup('env', 'CF_API_EMAIL') }}"
+# acme_certificate_api_token: "{{ lookup('env', 'CF_API_TOKEN') }}"
 acme_certificate_zone: "{{ acme_certificate_domain | split_with('.') | tail | join('.') }}"
-acme_certificate_caurl: https://letsencrypt.org/certs/isrgrootx1.pem.txt
-acme_certificate_intcaurl: https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt
+# acme_certificate_caurl: https://letsencrypt.org/certs/isrgrootx1.pem.txt
+# acme_certificate_intcaurl: https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt
 acme_certificate_challenge_ttl: 1
 acme_certificate_challenge_wait: 60
 acme_certificate_api_version: 2
+acme_certificate_directory: https://acme-v02.api.letsencrypt.org/directory
 _acme_certificate_domain_keyfile: "{{ acme_certificate_keydir }}/id_rsa.{{ acme_certificate_domain }}"
 _acme_certificate_domain_csrfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.csr"
 _acme_certificate_domain_crtfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.crt"
 _acme_certificate_domain_chainfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.chain.crt"
-_acme_certificate_cafile: "{{ acme_certificate_caurl | urlsplit('path') | basename }}"
-_acme_certificate_intcafile: "{{ acme_certificate_intcaurl | urlsplit('path') | basename }}"
-acme_certificate_directory: https://acme-v02.api.letsencrypt.org/directory
-# acme_certificate_cafile: define to create symlink to issuing ca cert file
-# acme_certificate_intcafile: define to create symlink to issuing ca cert file
 # acme_certificate_certfile: define to create symlink to cert file
 # acme_certificate_chainfile: define to create symlink to certificate chain file
 # acme_certificate_keyfile: define to create symlink to key file
