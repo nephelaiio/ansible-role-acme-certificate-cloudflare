@@ -7,7 +7,7 @@ acme_certificate_certdir: "{{ acme_certificate_basedir }}/live"
 acme_certificate_keydir: "{{ acme_certificate_basedir }}/keys"
 acme_certificate_account_keyfile: "{{ acme_certificate_keydir }}/id_rsa.letsencrypt"
 acme_certificate_domain: "{{ ansible_fqdn }}"
-acme_certificate_zone: "{{ acme_certificate_domain | split_with('.') | tail | join('.') }}"
+acme_certificate_zone: "{{ (acme_certificate_domain | split('.'))[1:] | join('.') }}"
 # acme_certificate_caurl: https://letsencrypt.org/certs/isrgrootx1.pem.txt
 # acme_certificate_intcaurl: https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt
 acme_certificate_challenge_ttl: 1
