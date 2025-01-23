@@ -5,7 +5,7 @@ galaxy_info:
   author: nephelaiio
   description: An ansible role to generate acme certificates using dns challenges with cloudflare dns
   license: MIT
-  min_ansible_version: '2.10'
+  min_ansible_version: "2.10"
   platforms:
     - name: EL
       versions:
@@ -23,6 +23,5 @@ galaxy_info:
     - cloudflare
 
 dependencies:
-  - role: nephelaiio.plugins
   - role: geerlingguy.repo-epel
     when: ansible_os_family == 'RedHat'
