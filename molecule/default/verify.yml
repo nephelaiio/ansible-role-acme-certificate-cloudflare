@@ -16,3 +16,16 @@
         success_msg: "Certificate issuer is {{ _issuer_name }}"
       vars:
         _issuer_name: "Let's Encrypt"
+
+    - name: Query certificate CN
+      ansible.builtin.shell: "openssl x509 -in {{ cert_file }} -noout -text | grep 'Subject: CN' | sed -e 's/.*= //'"
+      vars:
+        cert_file: "/etc/letsencrypt/live/{{ acme_certificate_domain }}.crt"
+      register: _cert_cn
+      changed_when: false
+
+    - name: Verify certificate CN
+      ansible.builtin.assert:
+        that: _cert_cn.stdout == acme_certificate_domain
+        fail_msg: "Certificate CN is {{ _cert_cn.stdout }}"
+        success_msg: "Certificate issuer is {{ _cert_cn.stdout }}"
