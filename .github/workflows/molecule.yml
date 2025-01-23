@@ -60,5 +60,4 @@ jobs:
           MOLECULE_DOCKER_IMAGE: ${{ matrix.image.name }}
           MOLECULE_DOCKER_COMMAND: ${{ matrix.image.command }}
           MOLECULE_SCENARIO: ${{ matrix.scenario.name }}
-          CF_API_EMAIL: ${{ secrets.CF_API_EMAIL }}
-          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_TOKEN: ${{ secrets.CF_ACCOUNT_TOKEN }}
