@@ -19,10 +19,8 @@ provisioner:
         acme_certificate_directory: https://acme-staging-v02.api.letsencrypt.org/directory
         acme_certificate_email: ci@nephelai.io
         acme_certificate_domain: "cloudflare-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}.nephelai.io"
-        acme_certificate_caurl: https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem
-        acme_certificate_intcaurl: https://letsencrypt.org/certs/staging/letsencrypt-stg-int-r3.pem
+        acme_certificate_cf_account_token: "{{ lookup('env', 'CF_ACCOUNT_TOKEN') }}"
         acme_certificate_cafile: /tmp/cafile
-        acme_certificate_intcafile: /tmp/intfile
         acme_certificate_chainfile: /tmp/chainfile
         acme_certificate_file: /tmp/crtfile
         acme_certificate_keyfile: /tmp/keyfile
