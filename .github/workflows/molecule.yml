@@ -1,23 +1,18 @@
 ---
 name: molecule
-
 on:
   pull_request:
     branches:
       - master
-
-defaults:
-  run:
-    working-directory: "nephelaiio.acme_certificate_cloudflare"
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   molecule:
     name: molecule
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        scenario:
-          - name: default
         image:
           - name: ubuntu2404
             command: /lib/systemd/systemd
@@ -25,39 +20,20 @@ jobs:
             command: /lib/systemd/systemd
           - name: ubuntu2004
             command: /lib/systemd/systemd
+          - name: debian13
+            command: /lib/systemd/systemd
           - name: debian12
             command: /lib/systemd/systemd
           - name: debian11
             command: /lib/systemd/systemd
     steps:
-      - name: Check out the codebase
-        uses: actions/checkout@v3
+      - name: Run molecule test
+        uses: pokerops/ansible-utils@master
         with:
-          path: "nephelaiio.acme_certificate_cloudflare"
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-
-      - name: Update ubuntu repositories
-        run: sudo apt-get update
-
-      - name: Install make
-        run: sudo apt-get install -y make
-
-      - name: Install dependencies
-        run: make install
-
-      - name: Debug test environment
-        run: make debug
-
-      - name: Run molecule tests.
-        run: make test
+          run: "make install requirements test"
         env:
           PY_COLORS: "1"
           ANSIBLE_FORCE_COLOR: "1"
+          MOLECULE_SCENARIO: default
           MOLECULE_DOCKER_IMAGE: ${{ matrix.image.name }}
           MOLECULE_DOCKER_COMMAND: ${{ matrix.image.command }}
-          MOLECULE_SCENARIO: ${{ matrix.scenario.name }}
-          CF_ACCOUNT_TOKEN: ${{ secrets.CF_ACCOUNT_TOKEN }}

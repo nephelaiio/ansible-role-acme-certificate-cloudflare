@@ -1,46 +1,13 @@
 ---
-# This workflow requires a GALAXY_API_KEY secret present in the GitHub
-# repository or organization.
-#
-# See: https://github.com/marketplace/actions/publish-ansible-role-to-galaxy
-# See: https://github.com/ansible/galaxy/issues/46
-
 name: release
+permissions:
+  contents: read
 on:
   push:
     tags:
       - "*"
-
-defaults:
-  run:
-    working-directory: "nephelaiio.acme_certificate_cloudflare"
-
 jobs:
   release:
-    name: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the codebase
-        uses: actions/checkout@v3
-        with:
-          path: "nephelaiio.acme_certificate_cloudflare"
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-
-      - name: Update ubuntu repositories
-        run: sudo apt-get update
-
-      - name: Install make
-        run: sudo apt-get install -y make
-
-      - name: Install dependencies
-        run: make install
-
-      - name: Trigger a new import on galaxy
-        run: make publish
-        env:
-          GALAXY_API_KEY: "${{ secrets.GALAXY_API_KEY }}"
-          GITHUB_REPOSITORY: "${{ github.repository }}"
+    uses: pokerops/ansible-utils/.github/workflows/release.yml@master
+    secrets:
+      GALAXY_API_KEY: ${{ secrets.GALAXY_API_KEY }}
