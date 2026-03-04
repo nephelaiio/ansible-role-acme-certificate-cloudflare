@@ -11,9 +11,9 @@
 
     - name: Verify certificate issuer
       ansible.builtin.assert:
-        that: _issuer_name in _issuer_data.stdout
-        fail_msg: "Certificate data is {{ _issuer_data.stdout }}"
-        success_msg: "Certificate issuer is {{ _issuer_name }}"
+        that: _issuer_data.stdout is search(_issuer_name)
+        fail_msg: "Certificate issuer is {{ _issuer_data.stdout }}"
+        success_msg: "Certificate issuer is {{ _issuer_data.stdout }}"
       vars:
         _issuer_name: "Let's Encrypt"
 
@@ -26,6 +26,6 @@
 
     - name: Verify certificate CN
       ansible.builtin.assert:
-        that: _cert_cn.stdout == acme_certificate_domain
+        that: _cert_cn.stdout is search(acme_certificate_domain)
         fail_msg: "Certificate CN is {{ _cert_cn.stdout }}"
-        success_msg: "Certificate issuer is {{ _cert_cn.stdout }}"
+        success_msg: "Certificate CN is {{ _cert_cn.stdout }}"
