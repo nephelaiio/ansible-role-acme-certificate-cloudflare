@@ -9,6 +9,7 @@
     state: directory
     suffix: virtualenv
   register: _virtualenv_tmpdir
+  changed_when: false
 
 - name: Set virtualenv facts
   ansible.builtin.set_fact:
@@ -24,6 +25,7 @@
       - dnspython
       - cryptography
     virtualenv: "{{ _virtualenv_path }}"
+  changed_when: false
 
 - name: Change python interpreter
   ansible.builtin.set_fact:
