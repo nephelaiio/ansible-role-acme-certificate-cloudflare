@@ -142,7 +142,7 @@
       register: _cloudflare_create
       until: _cloudflare_create is succeeded
       retries: "{{ acme_certificate_challenge_retry }}"
-      sleep: "{{ acme_certificate_challenge_sleep }}"
+      delay: "{{ acme_certificate_challenge_delay }}"
 
     - name: Wait for txt record replication
       ansible.builtin.pause:
@@ -162,7 +162,7 @@
       register: _acme_validation
       until: _acme_validation is succeeded
       retries: "{{ acme_certificate_challenge_retry }}"
-      sleep: "{{ acme_certificate_challenge_sleep }}"
+      delay: "{{ acme_certificate_challenge_delay }}"
 
   always:
     - name: Delete cloudflare dns challenge record
@@ -179,7 +179,7 @@
       register: _cloudflare_delete
       until: _cloudflare_delete is succeeded
       retries: "{{ acme_certificate_challenge_retry }}"
-      sleep: "{{ acme_certificate_challenge_sleep }}"
+      delay: "{{ acme_certificate_challenge_delay }}"
 
 - name: Manage acme root ca file
   when: acme_certificate_caurl is defined
