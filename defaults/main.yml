@@ -12,8 +12,11 @@ acme_certificate_zone: "{{ (acme_certificate_domain | split('.'))[1:] | join('.'
 # acme_certificate_intcaurl: https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt
 acme_certificate_challenge_ttl: 1
 acme_certificate_challenge_wait: 60
+acme_certificate_challenge_retry: 6
+acme_certificate_challenge_delay: 10
 acme_certificate_api_version: 2
 acme_certificate_directory: https://acme-v02.api.letsencrypt.org/directory
+acme_certificate_tempdir: /tmp
 _acme_certificate_domain_keyfile: "{{ acme_certificate_keydir }}/id_rsa.{{ acme_certificate_domain }}"
 _acme_certificate_domain_csrfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.csr"
 _acme_certificate_domain_crtfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.crt"

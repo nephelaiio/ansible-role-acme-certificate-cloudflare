@@ -1,18 +1,28 @@
 ---
 dependency:
   name: galaxy
+  options:
+    role-file: requirements.yml
+    requirements-file: requirements.yml
 driver:
   name: docker
 platforms:
-  - name: instance
+  - name: mongodb-install-01
     image: "geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}-ansible:latest"
+    command: ${MOLECULE_COMMAND:-"/lib/systemd/systemd"}
+    cgroupns_mode: host
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: false
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
     pre_build_image: true
-    cgroupns_mode: private
+    tmpfs:
+      - /tmp
+      - /run
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      callbacks_enabled: ansible.posix.profile_tasks
   inventory:
     group_vars:
       all:
@@ -24,7 +34,15 @@ provisioner:
         acme_certificate_chainfile: /tmp/chainfile
         acme_certificate_file: /tmp/crtfile
         acme_certificate_keyfile: /tmp/keyfile
-scenario:
-  name: default
+        acme_certificate_tempdir: /opt
 verifier:
   name: ansible
+scenario:
+  create_sequence:
+    - create
+  prepare_sequence:
+    - prepare
+  converge_sequence:
+    - converge
+  destroy_sequence:
+    - destroy

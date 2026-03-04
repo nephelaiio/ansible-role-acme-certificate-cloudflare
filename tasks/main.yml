@@ -1,4 +1,36 @@
 ---
+- name: Install virtualenv
+  ansible.builtin.package:
+    name: "{{ (ansible_os_family == 'Debian') | ternary('virtualenv', 'python-virtualenv') }}"
+
+- name: Create virtualenv
+  ansible.builtin.tempfile:
+    path: "{{ acme_certificate_tempdir }}"
+    state: directory
+    suffix: virtualenv
+  register: _virtualenv_tmpdir
+  changed_when: false
+
+- name: Set virtualenv facts
+  ansible.builtin.set_fact:
+    _virtualenv_path: "{{ _path }}"
+    _virtualenv_python: "{{ _python }}"
+  vars:
+    _path: "{{ _virtualenv_tmpdir.path }}/venv"
+    _python: "{{ _path }}/bin/python"
+
+- name: Initialize virtualenv
+  ansible.builtin.pip:
+    name:
+      - dnspython
+      - cryptography
+    virtualenv: "{{ _virtualenv_path }}"
+  changed_when: false
+
+- name: Change python interpreter
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: "{{ _virtualenv_python }}"
+
 - name: Check user token authentication params
   when: acme_certificate_cf_account_token is defined
   block:
@@ -36,24 +68,11 @@
   when: acme_certificate_add_ca | bool
 
 - name: Include variable overrides
-  ansible.builtin.include_vars: "{{ item }}"
-  with_first_found:
-    - files:
-        - "vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-        - "vars/{{ ansible_distribution }}.yml"
-        - "vars/{{ ansible_os_family }}.yml"
-        - "vars/main.yml"
+  ansible.builtin.include_vars: "vars/{{ ansible_os_family }}.yml"
 
 - name: Install package requirements
   ansible.builtin.package:
     name: "{{ acme_certificate_packages }}"
-
-- name: Install pip requirements
-  ansible.builtin.pip:
-    name:
-      - dnspython
-      - cryptography
-  changed_when: false
 
 - name: Create acme group
   ansible.builtin.group:
@@ -122,6 +141,10 @@
         account_api_key: "{{ acme_certificate_api_token | default(omit) }}"
         account_email: "{{ acme_certificate_api_email | default(omit) }}"
         api_token: "{{ acme_certificate_cf_account_token | default(omit) }}"
+      register: _cloudflare_create
+      until: _cloudflare_create is succeeded
+      retries: "{{ acme_certificate_challenge_retry }}"
+      delay: "{{ acme_certificate_challenge_delay }}"
 
     - name: Wait for txt record replication
       ansible.builtin.pause:
@@ -138,7 +161,10 @@
         terms_agreed: yes
         acme_version: "{{ acme_certificate_api_version }}"
         acme_directory: "{{ acme_certificate_directory }}"
-      delay: "{{ acme_certificate_challenge_ttl }}"
+      register: _acme_validation
+      until: _acme_validation is succeeded
+      retries: "{{ acme_certificate_challenge_retry }}"
+      delay: "{{ acme_certificate_challenge_delay }}"
 
   always:
     - name: Delete cloudflare dns challenge record
@@ -152,6 +178,10 @@
         account_api_key: "{{ acme_certificate_api_token | default(omit) }}"
         account_email: "{{ acme_certificate_api_email | default(omit) }}"
         api_token: "{{ acme_certificate_cf_account_token | default(omit) }}"
+      register: _cloudflare_delete
+      until: _cloudflare_delete is succeeded
+      retries: "{{ acme_certificate_challenge_retry }}"
+      delay: "{{ acme_certificate_challenge_delay }}"
 
 - name: Manage acme root ca file
   when: acme_certificate_caurl is defined
