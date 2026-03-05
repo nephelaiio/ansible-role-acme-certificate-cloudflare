@@ -13,6 +13,8 @@ platforms:
     cgroupns_mode: host
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    networks:
+      - name: acme
     privileged: true
     pre_build_image: true
     tmpfs:
