@@ -1,6 +1,6 @@
 ---
 - name: Prepare
-  hosts: all
+  hosts: client
   tasks:
     - name: Update apt package cache
       ansible.builtin.apt:

@@ -17,6 +17,7 @@ acme_certificate_challenge_delay: 10
 acme_certificate_api_version: 2
 acme_certificate_directory: https://acme-v02.api.letsencrypt.org/directory
 acme_certificate_tempdir: /tmp
+acme_certificate_validate_certs: true
 _acme_certificate_domain_keyfile: "{{ acme_certificate_keydir }}/id_rsa.{{ acme_certificate_domain }}"
 _acme_certificate_domain_csrfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.csr"
 _acme_certificate_domain_crtfile: "{{ acme_certificate_certdir }}/{{ acme_certificate_domain }}.crt"

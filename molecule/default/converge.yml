@@ -1,5 +1,5 @@
 ---
 - name: Converge
-  hosts: all
+  hosts: client
   roles:
     - role: nephelaiio.acme_certificate_cloudflare
