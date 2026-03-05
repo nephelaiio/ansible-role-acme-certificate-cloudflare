@@ -15,7 +15,7 @@
         fail_msg: "Certificate issuer is '{{ _issuer_data.stdout }}'"
         success_msg: "Certificate issuer is '{{ _issuer_data.stdout }}'"
       vars:
-        _issuer_name: "Pebble"
+        _issuer_name: "STAGING"
 
     - name: Query certificate CN
       ansible.builtin.shell: "openssl x509 -in {{ cert_file }} -noout -text | grep DNS: | sed -e 's/.*[:=]//' | xargs"
