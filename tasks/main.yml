@@ -22,6 +22,7 @@
 - name: Initialize virtualenv
   ansible.builtin.pip:
     name:
+      - packaging
       - dnspython
       - cryptography
     virtualenv: "{{ _virtualenv_path }}"
@@ -118,6 +119,7 @@
 - name: Create acme challenge
   community.crypto.acme_certificate:
     account_key: "{{ acme_certificate_account_keyfile }}"
+    modify_account: true
     challenge: dns-01
     csr: "{{ _acme_certificate_domain_csrfile }}"
     dest: "{{ _acme_certificate_domain_crtfile }}"
@@ -125,6 +127,7 @@
     terms_agreed: yes
     acme_version: "{{ acme_certificate_api_version }}"
     acme_directory: "{{ acme_certificate_directory }}"
+    validate_certs: "{{ acme_certificate_validate_certs }}"
   register: acme_certificate_challenge
 
 - name: Validate acme channelge
@@ -153,6 +156,7 @@
     - name: Validate challenge
       community.crypto.acme_certificate:
         account_key: "{{ acme_certificate_account_keyfile }}"
+        modify_account: false
         challenge: dns-01
         csr: "{{ _acme_certificate_domain_csrfile }}"
         dest: "{{ _acme_certificate_domain_crtfile }}"
@@ -161,6 +165,7 @@
         terms_agreed: yes
         acme_version: "{{ acme_certificate_api_version }}"
         acme_directory: "{{ acme_certificate_directory }}"
+        validate_certs: "{{ acme_certificate_validate_certs }}"
       register: _acme_validation
       until: _acme_validation is succeeded
       retries: "{{ acme_certificate_challenge_retry }}"
