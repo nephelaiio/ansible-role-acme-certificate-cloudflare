@@ -22,6 +22,7 @@
 - name: Initialize virtualenv
   ansible.builtin.pip:
     name:
+      - packaging
       - dnspython
       - cryptography
     virtualenv: "{{ _virtualenv_path }}"
