@@ -59,7 +59,7 @@
 
     - name: Check acme_certificate_api_token vardef
       ansible.builtin.assert:
-        that: acme_certificate_api_token | default('') == ""
+        that: acme_certificate_api_token | default('') != ""
         fail_msg: acme_certificate_api_token is required if acme_certificate_cf_account_token is not set
 
 - name: Check acme ca certificate params
