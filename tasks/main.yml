@@ -30,7 +30,7 @@
 
 - name: Record python interpreter path
   ansible.builtin.set_fact:
-    _environment_python: "{{ ansible_python_interpreter }}"
+    _environment_python: "{{ ansible_facts.ansible_python.executable }}"
 
 - name: Generate ACME certificate
   block:
@@ -44,16 +44,17 @@
         - name: Check acme_certificate_cf_account_token vardef
           ansible.builtin.assert:
             that: acme_certificate_cf_account_token != ''
+            fail_msg: acme_certificate_cf_account_token must be non-empty when defined
 
         - name: Check acme_certificate_api_email vardef
           ansible.builtin.assert:
             that: acme_certificate_api_email is not defined
-            fail_msg: acme_certificate_api_email is defined
+            fail_msg: acme_certificate_api_email and acme_certificate_cf_account_token are both defined
 
         - name: Check acme_certificate_api_token vardef
           ansible.builtin.assert:
             that: acme_certificate_api_token is not defined
-            fail_msg: acme_certificate_api_token is defined
+            fail_msg: acme_certificate_api_token and acme_certificate_cf_account_token are both defined
 
     - name: Check user token authentication params
       when: acme_certificate_cf_account_token is not defined
