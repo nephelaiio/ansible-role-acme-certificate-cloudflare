@@ -30,7 +30,7 @@
 
 - name: Record python interpreter path
   ansible.builtin.set_fact:
-    _environment_python: "{{ ansible_facts.ansible_python.executable }}"
+    _environment_python: "{{ ansible_facts.python.executable }}"
 
 - name: Generate ACME certificate
   block:
